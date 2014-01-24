@@ -2,7 +2,7 @@
 #COSI236B - PA02
 #1/23/2014
 
-class MovieData
+class MovieTest
 	attr_accessor :file, :movies, :users
 
 	def initialize(file_path)
