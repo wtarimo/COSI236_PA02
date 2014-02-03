@@ -11,6 +11,8 @@ class MovieData
 	attr_accessor :training_file, :test_file, :movieRatings, :users, :views
 
 	def initialize(path,pair=nil)
+		#Saves verifies paths to training and test files, loads training data.
+
 		folder = Pathname.new(path)
 		if folder.directory?
 			@movieRatings = Hash.new { |hash, key| hash[key] = [0,0] } #hash[movie_id] = [totalRates, sumRates]
@@ -93,8 +95,6 @@ class MovieData
 		end
 		return MovieTest.new predictions
 	end
-
-
 
 	def similarity(user1,user2)
 		#Generates a number which indicates the similarity in movie preference btn users 1 and 2
