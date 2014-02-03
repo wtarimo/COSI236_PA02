@@ -54,23 +54,15 @@ class MovieData
 		#returns a floating point number between 1.0 and 5.0 as an estimate of what user u would rate movie m
 		viewedUsers = viewers(m).drop(1)
 		return 3.0 unless viewedUsers.size > 0
-		#print "viewedUsers: ",viewedUsers
 		wRatings = []
 		similarities = []
 		viewedUsers.each {|user| similarities.push similarity(u,user)}
-		#print "similarities: ",similarities
-		#puts
 		min = 0
 		min = similarities.min if similarities.size>1
 		scale = (similarities.max-min)/1.5
-		viewedUsers.each {|user| wRatings.push(rating(user,m)*(similarity(u,user)-min).to_f/scale)}
-		#print "wRatings: ",wRatings
-		#puts
-		scale = (wRatings.max - wRatings.min)/4.0
-		wRatings2=[]
-		wRatings.each {|rating| wRatings2.push(1.0+(rating-wRatings.min)/scale)}
-		#print "wRatings2: ",wRatings2
-		return wRatings2.instance_eval { reduce(:+) / size.to_f }
+		viewedUsers.each {|user| wRatings.push(rating(user,m)) if (similarity(u,user)-min).to_f/scale > 0.85}
+		
+		return wRatings.instance_eval { reduce(:+) / size.to_f }
 	end
 
 	def movies(u)
@@ -79,7 +71,6 @@ class MovieData
 		movies = []
 		@users[u.to_s.to_sym].each {|id,rating| movies.push id}
 		return movies
-
 	end
 
 	def viewers(m)
@@ -123,12 +114,3 @@ class MovieData
 	end
 
 end
-
-
-
-z = MovieData.new('ml-100k',:u1)
-t = z.test()
-puts t.mean
-puts t.stddev
-puts t.rms
-#print t.to_a
